@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>12.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Hide wit-bindgen warnings if any -->
+    <NoWarn>$(NoWarn);CS0169;CS0649;CS8618</NoWarn>
+
+    <!-- NuGet Package Metadata -->
+    <PackageId>PumpkinMC.PumpkinApi</PackageId>
+    <Version>0.1.0-dev</Version>
+    <Authors>PumpkinMC Contributors</Authors>
+    <Description>Pumpkin server plugin API bindings for C# (.NET)</Description>
+    <RepositoryUrl>https://github.com/Pumpkin-MC/pumpkin-api-cs</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

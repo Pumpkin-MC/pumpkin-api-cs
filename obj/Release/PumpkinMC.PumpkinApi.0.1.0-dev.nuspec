@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PumpkinMC.PumpkinApi</id>
+    <version>0.1.0-dev</version>
+    <authors>PumpkinMC Contributors</authors>
+    <license type="expression">GPL-3.0-or-later</license>
+    <licenseUrl>https://licenses.nuget.org/GPL-3.0-or-later</licenseUrl>
+    <readme>README.md</readme>
+    <description>Pumpkin server plugin API bindings for C# (.NET)</description>
+    <repository type="git" url="https://github.com/Pumpkin-MC/pumpkin-api-cs" />
+    <dependencies>
+      <group targetFramework="net10.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="/home/alex/Documents/Development/Rust/pumpkin-api-cs/bin/Release/net10.0/PumpkinApi.dll" target="lib/net10.0/PumpkinApi.dll" />
+    <file src="/home/alex/Documents/Development/Rust/pumpkin-api-cs/README.md" target="/README.md" />
+  </files>
+</package>

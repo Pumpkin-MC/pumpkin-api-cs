@@ -1,0 +1,1399 @@
+package pumpkin:plugin@0.1.0;
+
+interface logging {
+  enum level {
+    trace,
+    debug,
+    info,
+    warn,
+    error,
+  }
+
+  log: func(level: level, message: string);
+
+  log-tracing: func(event: list<u8>);
+}
+
+interface common {
+  type raw-text-component = list<u8>;
+
+  type block-position = tuple<s32, s32, s32>;
+
+  type position = tuple<f64, f64, f64>;
+
+  enum hand {
+    left,
+    right,
+  }
+
+  enum game-mode {
+    survival,
+    creative,
+    adventure,
+    spectator,
+  }
+
+  enum named-color {
+    black,
+    dark-blue,
+    dark-green,
+    dark-aqua,
+    dark-red,
+    dark-purple,
+    gold,
+    gray,
+    dark-gray,
+    blue,
+    green,
+    aqua,
+    red,
+    light-purple,
+    yellow,
+    white,
+  }
+
+  record rgb-color {
+    r: u8,
+    g: u8,
+    b: u8,
+  }
+
+  record argb-color {
+    a: u8,
+    r: u8,
+    g: u8,
+    b: u8,
+  }
+
+  record item-stack {
+    registry-key: string,
+    count: u8,
+  }
+
+  enum click-type {
+    left,
+    right,
+    shift-left,
+    shift-right,
+    middle,
+    drop,
+    control-drop,
+    double-click,
+    number-key,
+    unknown,
+  }
+
+  enum entity-pose {
+    standing,
+    fall-flying,
+    sleeping,
+    swimming,
+    spin-attack,
+    crouching,
+    long-jumping,
+    dying,
+    croaking,
+    using-tongue,
+    sitting,
+    roaring,
+    sniffing,
+    emerging,
+    digging,
+    sliding,
+    shooting,
+    inhaling,
+  }
+
+  enum locale {
+    af-za,
+    ar-sa,
+    ast-es,
+    az-az,
+    ba-ru,
+    bar,
+    be-by,
+    bg-bg,
+    br-fr,
+    brb,
+    bs-ba,
+    ca-es,
+    cs-cz,
+    cy-gb,
+    da-dk,
+    de-at,
+    de-ch,
+    de-de,
+    el-gr,
+    en-au,
+    en-ca,
+    en-gb,
+    en-nz,
+    en-pt,
+    en-ud,
+    en-us,
+    enp,
+    enws,
+    eo-uy,
+    es-ar,
+    es-cl,
+    es-ec,
+    es-es,
+    es-mx,
+    es-uy,
+    es-ve,
+    esan,
+    et-ee,
+    eu-es,
+    fa-ir,
+    fi-fi,
+    fil-ph,
+    fo-fo,
+    fr-ca,
+    fr-fr,
+    fra-de,
+    fur-it,
+    fy-nl,
+    ga-ie,
+    gd-gb,
+    gl-es,
+    haw-us,
+    he-il,
+    hi-in,
+    hr-hr,
+    hu-hu,
+    hy-am,
+    id-id,
+    ig-ng,
+    io-en,
+    is-is,
+    isv,
+    it-it,
+    ja-jp,
+    jbo-en,
+    ka-ge,
+    kk-kz,
+    kn-in,
+    ko-kr,
+    ksh,
+    kw-gb,
+    la-la,
+    lb-lu,
+    li-li,
+    lmo,
+    lo-la,
+    lol-us,
+    lt-lt,
+    lv-lv,
+    lzh,
+    mk-mk,
+    mn-mn,
+    ms-my,
+    mt-mt,
+    nah,
+    nds-de,
+    nl-be,
+    nl-nl,
+    nn-no,
+    no-no,
+    oc-fr,
+    ovd,
+    pl-pl,
+    pt-br,
+    pt-pt,
+    qya-aa,
+    ro-ro,
+    rpr,
+    ru-ru,
+    ry-ua,
+    sah-sah,
+    se-no,
+    sk-sk,
+    sl-si,
+    so-so,
+    sq-al,
+    sr-cs,
+    sr-sp,
+    sv-se,
+    sxu,
+    szl,
+    ta-in,
+    th-th,
+    tl-ph,
+    tlh-aa,
+    tok,
+    tr-tr,
+    tt-ru,
+    uk-ua,
+    val-es,
+    vec-it,
+    vi-vn,
+    yi-de,
+    yo-ng,
+    zh-cn,
+    zh-hk,
+    zh-tw,
+    zlm-arab,
+  }
+}
+
+interface text {
+  use common.{named-color, rgb-color, argb-color};
+
+  resource text-component {
+    text: static func(plain: string) -> text-component;
+    translate: static func(key: string, %with: list<text-component>) -> text-component;
+    add-child: func(child: text-component);
+    add-text: func(text: string);
+    get-text: func() -> string;
+    encode: func() -> list<u8>;
+    color-named: func(color: named-color);
+    color-rgb: func(color: rgb-color);
+    bold: func(value: bool);
+    italic: func(value: bool);
+    underlined: func(value: bool);
+    strikethrough: func(value: bool);
+    obfuscated: func(value: bool);
+    insertion: func(text: string);
+    font: func(font: string);
+    shadow-color: func(color: argb-color);
+    click-open-url: func(url: string);
+    click-run-command: func(command: string);
+    click-suggest-command: func(command: string);
+    click-copy-to-clipboard: func(text: string);
+    hover-show-text: func(text: text-component);
+    hover-show-item: func(item: string);
+    hover-show-entity: func(entity-type: string, id: string, name: option<text-component>);
+  }
+}
+
+interface gui {
+  use text.{text-component};
+  use common.{item-stack, click-type};
+
+  enum gui-type {
+    generic-9x1,
+    generic-9x2,
+    generic-9x3,
+    generic-9x4,
+    generic-9x5,
+    generic-9x6,
+    generic-3x3,
+    crafter-3x3,
+    anvil,
+    beacon,
+    blast-furnace,
+    brewing-stand,
+    crafting,
+    enchantment,
+    furnace,
+    grindstone,
+    hopper,
+    lectern,
+    loom,
+    merchant,
+    shulker-box,
+    smithing,
+    smoker,
+    cartography-table,
+    stonecutter,
+  }
+
+  resource gui {
+    constructor(%type: gui-type, title: text-component);
+    set-item: func(slot: u32, item: item-stack);
+    get-item: func(slot: u32) -> option<item-stack>;
+    get-type: func() -> gui-type;
+    get-title: func() -> text-component;
+    get-size: func() -> u32;
+    clear-items: func();
+    set-allow-grab-items: func(allow: bool);
+    get-allow-grab-items: func() -> bool;
+    set-allow-put-items: func(allow: bool);
+    get-allow-put-items: func() -> bool;
+  }
+}
+
+interface scoreboard {
+  use text.{text-component};
+  use common.{named-color};
+
+  enum render-type {
+    integer,
+    hearts,
+  }
+
+  enum display-slot {
+    player-list,
+    sidebar,
+    below-name,
+    sidebar-team-black,
+    sidebar-team-dark-blue,
+    sidebar-team-dark-green,
+    sidebar-team-dark-aqua,
+    sidebar-team-dark-red,
+    sidebar-team-dark-purple,
+    sidebar-team-gold,
+    sidebar-team-gray,
+    sidebar-team-dark-gray,
+    sidebar-team-blue,
+    sidebar-team-green,
+    sidebar-team-aqua,
+    sidebar-team-red,
+    sidebar-team-light-purple,
+    sidebar-team-yellow,
+    sidebar-team-white,
+  }
+
+  enum nametag-visibility {
+    always,
+    never,
+    hide-for-other-teams,
+    hide-for-own-team,
+  }
+
+  enum collision-rule {
+    always,
+    never,
+    push-other-teams,
+    push-own-team,
+  }
+
+  record team-settings {
+    display-name: text-component,
+    friendly-fire: bool,
+    see-friendly-invisibles: bool,
+    nametag-visibility: nametag-visibility,
+    collision-rule: collision-rule,
+    color: named-color,
+    prefix: text-component,
+    suffix: text-component,
+  }
+
+  resource scoreboard {
+    add-objective: func(name: string, display-name: text-component, render-type: render-type);
+    remove-objective: func(name: string);
+    set-display-slot: func(slot: display-slot, objective-name: string);
+    update-score: func(entity-name: string, objective-name: string, value: s32);
+    remove-score: func(entity-name: string, objective-name: string);
+    create-team: func(name: string, settings: team-settings);
+    remove-team: func(name: string);
+    update-team: func(name: string, settings: team-settings);
+    add-player-to-team: func(team-name: string, player-name: string);
+    remove-player-from-team: func(team-name: string, player-name: string);
+  }
+}
+
+interface %world {
+  use common.{position, entity-pose};
+  use text.{text-component};
+  use scoreboard.{scoreboard};
+
+  enum piston-behavior {
+    normal,
+    destroy,
+    block,
+    ignore,
+    push-only,
+  }
+
+  enum sound-category {
+    master,
+    music,
+    records,
+    weather,
+    blocks,
+    hostile,
+    neutral,
+    players,
+    ambient,
+    voice,
+  }
+
+  enum explosion-interaction {
+    none,
+    block,
+    mob,
+    tnt,
+    trigger,
+  }
+
+  flags block-flags {
+    notify-neighbors,
+    notify-listeners,
+    force-state,
+    skip-drops,
+    moved,
+    skip-redstone-wire-state-replacement,
+    skip-block-entity-replaced-callback,
+    skip-block-added-callback,
+  }
+
+  record block-state {
+    id: u16,
+    luminance: u8,
+    opacity: u8,
+    hardness: f32,
+    is-air: bool,
+    is-liquid: bool,
+    is-solid: bool,
+    is-full-cube: bool,
+    piston-behavior: piston-behavior,
+    has-random-ticks: bool,
+  }
+
+  record block-state-id {
+    id: u16,
+  }
+
+  record block-pos {
+    x: s32,
+    y: s32,
+    z: s32,
+  }
+
+  resource entity {
+    get-id: func() -> u32;
+    get-uuid: func() -> string;
+    get-type: func() -> string;
+    get-position: func() -> position;
+    get-world: func() -> %world;
+    get-yaw: func() -> f32;
+    get-pitch: func() -> f32;
+    get-head-yaw: func() -> f32;
+    is-on-ground: func() -> bool;
+    is-sneaking: func() -> bool;
+    set-sneaking: func(sneaking: bool);
+    is-sprinting: func() -> bool;
+    set-sprinting: func(sprinting: bool);
+    is-swimming: func() -> bool;
+    set-swimming: func(swimming: bool);
+    is-invisible: func() -> bool;
+    set-invisible: func(invisible: bool);
+    is-glowing: func() -> bool;
+    set-glowing: func(glowing: bool);
+    is-fall-flying: func() -> bool;
+    set-fall-flying: func(fall-flying: bool);
+    is-on-fire: func() -> bool;
+    set-on-fire: func(on-fire: bool);
+    teleport: func(pos: position, world-ref: %world);
+    set-velocity: func(velocity: position);
+    get-velocity: func() -> position;
+    get-pose: func() -> entity-pose;
+    get-name: func() -> text-component;
+    set-custom-name: func(name: text-component);
+    get-custom-name: func() -> option<text-component>;
+    set-custom-name-visible: func(visible: bool);
+    is-custom-name-visible: func() -> bool;
+    is-invulnerable: func() -> bool;
+    set-invulnerable: func(invulnerable: bool);
+    get-fire-ticks: func() -> s32;
+    set-fire-ticks: func(ticks: s32);
+    remove: func();
+    raycast: func(max-distance: f64, fluid-handling: bool) -> option<raycast-result>;
+  }
+
+  enum block-direction {
+    down,
+    up,
+    north,
+    south,
+    west,
+    east,
+  }
+
+  record raycast-result {
+    pos: block-pos,
+    face: block-direction,
+  }
+
+  resource %world {
+    get-id: func() -> string;
+    get-block-state-id: func(pos: block-pos) -> u16;
+    get-block-state: func(pos: block-pos) -> block-state;
+    set-block-state: func(pos: block-pos, state: u16, update-flags: block-flags);
+    get-time-of-day: func() -> u64;
+    set-time-of-day: func(time: u64);
+    get-world-age: func() -> u64;
+    get-dimension: func() -> string;
+    get-top-block-y: func(x: s32, z: s32) -> s32;
+    get-motion-blocking-height: func(x: s32, z: s32) -> s32;
+    is-raining: func() -> bool;
+    set-raining: func(raining: bool);
+    is-thundering: func() -> bool;
+    set-thundering: func(thundering: bool);
+    broadcast-system-message: func(message: text-component, overlay: bool);
+    get-scoreboard: func() -> scoreboard;
+    play-sound: func(sound: string, category: sound-category, pos: position, volume: f32, pitch: f32);
+    spawn-particle: func(particle: string, pos: position, offset: position, max-speed: f32, count: s32);
+    create-explosion: func(pos: position, power: f32, create-fire: bool, interaction: explosion-interaction);
+    get-sea-level: func() -> s32;
+    get-min-y: func() -> s32;
+    get-entities: func() -> list<entity>;
+  }
+}
+
+interface entity {
+  use %world.{entity};
+}
+
+interface permission {
+  enum permission-level {
+    zero,
+    one,
+    two,
+    three,
+    four,
+  }
+
+  variant permission-default {
+    deny,
+    allow,
+    op(permission-level),
+  }
+
+  record permission-child {
+    node: string,
+    value: bool,
+  }
+
+  record permission {
+    node: string,
+    description: string,
+    default: permission-default,
+    children: list<permission-child>,
+  }
+}
+
+interface player {
+  use common.{hand, item-stack, position, game-mode};
+  use %world.{%world};
+  use entity.{entity};
+  use permission.{permission-level};
+  use text.{text-component};
+  use gui.{gui};
+
+  record player-abilities {
+    invulnerable: bool,
+    flying: bool,
+    allow-flying: bool,
+    creative: bool,
+    allow-modify-world: bool,
+    fly-speed: f32,
+    walk-speed: f32,
+  }
+
+  record player-skin {
+    value: string,
+    signature: option<string>,
+  }
+
+  flags skin-parts {
+    cape,
+    jacket,
+    left-sleeve,
+    right-sleeve,
+    left-pants-leg,
+    right-pants-leg,
+    hat,
+  }
+
+  resource player {
+    as-entity: func() -> entity;
+    get-id: func() -> string;
+    get-name: func() -> string;
+    get-position: func() -> position;
+    get-yaw: func() -> f32;
+    get-pitch: func() -> f32;
+    get-world: func() -> %world;
+    get-gamemode: func() -> game-mode;
+    set-gamemode: func(mode: game-mode) -> bool;
+    get-locale: func() -> string;
+    get-ping: func() -> u32;
+    get-permission-level: func() -> permission-level;
+    set-permission-level: func(level: permission-level);
+    set-permission: func(node: string, value: bool);
+    unset-permission: func(node: string);
+    has-permission-set: func(node: string) -> option<bool>;
+    has-permission: func(node: string) -> bool;
+    get-display-name: func() -> text-component;
+    set-display-name: func(display-name: text-component);
+    send-system-message: func(text: text-component, overlay: bool);
+    set-tab-list-header-footer: func(header: text-component, footer: text-component);
+    set-tab-list-order: func(order: s32);
+    set-tab-list-latency: func(latency: s32);
+    set-tab-list-listed: func(listed: bool);
+    show-title: func(text: text-component);
+    show-subtitle: func(text: text-component);
+    show-actionbar: func(text: text-component);
+    send-title-animation: func(fade-in: s32, stay: s32, fade-out: s32);
+    teleport: func(position: position, yaw: option<f32>, pitch: option<f32>, %world: %world);
+    teleport-world: func(world-ref: %world, position: position, yaw: option<f32>, pitch: option<f32>);
+    kick: func(message: text-component);
+    respawn: func();
+    open-gui: func(gui-ref: gui);
+    ban: func(reason: option<text-component>);
+    ban-ip: func(reason: option<text-component>);
+    get-selected-slot: func() -> u8;
+    get-item-in-hand: func(hand: hand) -> option<item-stack>;
+    get-inventory-item: func(slot: u8) -> option<item-stack>;
+    get-health: func() -> f32;
+    set-health: func(health: f32);
+    get-max-health: func() -> f32;
+    set-max-health: func(max-health: f32);
+    get-food-level: func() -> u8;
+    set-food-level: func(food-level: u8);
+    get-saturation: func() -> f32;
+    set-saturation: func(saturation: f32);
+    get-exhaustion: func() -> f32;
+    set-exhaustion: func(exhaustion: f32);
+    get-absorption: func() -> f32;
+    set-absorption: func(absorption: f32);
+    get-experience-level: func() -> s32;
+    get-experience-progress: func() -> f32;
+    get-experience-points: func() -> s32;
+    set-experience-level: func(level: s32);
+    set-experience-progress: func(progress: f32);
+    set-experience-points: func(points: s32);
+    add-experience-levels: func(levels: s32);
+    add-experience-points: func(points: s32);
+    is-flying: func() -> bool;
+    set-flying: func(flying: bool);
+    get-abilities: func() -> player-abilities;
+    set-abilities: func(abilities: player-abilities);
+    get-ip: func() -> string;
+    get-skin: func() -> option<player-skin>;
+    get-skin-parts: func() -> skin-parts;
+    set-skin-parts: func(parts: skin-parts);
+  }
+}
+
+interface server {
+  use player.{player};
+  use common.{game-mode};
+  use %world.{%world};
+  use text.{text-component};
+
+  enum difficulty {
+    peaceful,
+    easy,
+    normal,
+    hard,
+  }
+
+  enum dimension {
+    overworld,
+    nether,
+    end,
+  }
+
+  variant command-sender {
+    console,
+    player(player),
+  }
+
+  resource server {
+    get-difficulty: func() -> difficulty;
+    get-player-count: func() -> u32;
+    get-mspt: func() -> f64;
+    get-tps: func() -> f64;
+    get-all-players: func() -> list<player>;
+    get-player-by-name: func(name: string) -> option<player>;
+    get-player-by-uuid: func(id: string) -> option<player>;
+    get-all-worlds: func() -> list<%world>;
+    get-world-by-name: func(name: string) -> option<%world>;
+    execute-command: func(command: string, sender: command-sender);
+    create-world: func(name: string, dimension: dimension) -> %world;
+    broadcast: func(message: string);
+    broadcast-tab-list-header-footer: func(header: text-component, footer: text-component);
+    get-max-players: func() -> u32;
+    is-hardcore: func() -> bool;
+    is-online-mode: func() -> bool;
+    get-motd: func() -> string;
+    has-whitelist: func() -> bool;
+    get-allow-nether: func() -> bool;
+    get-allow-end: func() -> bool;
+    get-view-distance: func() -> u8;
+    get-simulation-distance: func() -> u8;
+    get-default-gamemode: func() -> game-mode;
+  }
+}
+
+interface block-entity {
+  use common.{block-position};
+
+  resource block-entity {
+    resource-location: func() -> string;
+    get-position: func() -> block-position;
+    get-id: func() -> u32;
+    is-dirty: func() -> bool;
+    clear-dirty: func();
+  }
+
+  resource command-block-entity {
+    get-block-entity: func() -> block-entity;
+    last-output: func() -> string;
+    track-output: func() -> bool;
+    success-count: func() -> u32;
+    command: func() -> string;
+    auto: func() -> bool;
+    condition-met: func() -> bool;
+    powered: func() -> bool;
+  }
+
+  variant block-entity-type {
+    command-block-entity(command-block-entity),
+  }
+}
+
+interface command {
+  use %world.{%world};
+  use entity.{entity};
+  use player.{player};
+  use block-entity.{command-block-entity};
+  use common.{position, block-position, locale};
+  use server.{server, difficulty};
+  use text.{text-component};
+
+  enum gamemode {
+    survival,
+    creative,
+    adventure,
+    spectator,
+  }
+
+  enum bossbar-color {
+    pink,
+    blue,
+    red,
+    green,
+    yellow,
+    purple,
+    white,
+  }
+
+  enum bossbar-style {
+    no-division,
+    notches6,
+    notches10,
+    notches12,
+    notches20,
+  }
+
+  enum sound-category {
+    master,
+    music,
+    records,
+    weather,
+    blocks,
+    hostile,
+    neutral,
+    players,
+    ambient,
+    voice,
+    ui,
+  }
+
+  enum entity-anchor {
+    feet,
+    eyes,
+  }
+
+  variant number {
+    %float64(f64),
+    %float32(f32),
+    int32(s32),
+    int64(s64),
+  }
+
+  variant not-in-bounds {
+    lower-bound(tuple<number, number>),
+    upper-bound(tuple<number, number>),
+  }
+
+  variant arg {
+    entities(list<entity>),
+    entity(entity),
+    players(list<player>),
+    block-pos(block-position),
+    pos3d(position),
+    pos2d(tuple<f64, f64>),
+    rotation(tuple<f32, bool, f32, bool>),
+    game-mode(gamemode),
+    difficulty(difficulty),
+    item(string),
+    item-predicate(string),
+    resource-location(string),
+    block(string),
+    block-predicate(string),
+    bossbar-color(bossbar-color),
+    bossbar-style(bossbar-style),
+    particle(string),
+    msg(string),
+    text-component(text-component),
+    time(s32),
+    num(result<number, not-in-bounds>),
+    %bool(bool),
+    simple(string),
+    sound-category(sound-category),
+    damage-type(string),
+    effect(string),
+    enchantment(string),
+    entity-anchor(entity-anchor),
+  }
+
+  resource consumed-args {
+    get-value: func(key: string) -> arg;
+  }
+
+  variant command-sender-type {
+    rcon,
+    console,
+    player(player),
+    command-block(tuple<command-block-entity, %world>),
+    dummy,
+  }
+
+  enum permission-level {
+    zero,
+    one,
+    two,
+    three,
+    four,
+  }
+
+  resource command-sender {
+    get-command-sender-type: func() -> command-sender-type;
+    send-message: func(text: text-component);
+    set-success-count: func(count: s32);
+    is-player: func() -> bool;
+    is-console: func() -> bool;
+    as-player: func() -> option<player>;
+    permission-level: func() -> permission-level;
+    has-permission-level: func(level: permission-level) -> bool;
+    has-permission: func(server: borrow<server>, node: string) -> bool;
+    position: func() -> option<position>;
+    %world: func() -> option<%world>;
+    get-locale: func() -> locale;
+    should-receive-feedback: func() -> bool;
+    should-broadcast-console-to-ops: func() -> bool;
+    should-track-output: func() -> bool;
+  }
+
+  enum string-type {
+    single-word,
+    quotable,
+    greedy,
+  }
+
+  variant argument-type {
+    %bool,
+    float(tuple<option<f32>, option<f32>>),
+    double(tuple<option<f64>, option<f64>>),
+    integer(tuple<option<s32>, option<s32>>),
+    long(tuple<option<s64>, option<s64>>),
+    %string(string-type),
+    entities,
+    entity,
+    players,
+    game-profile,
+    block-pos,
+    position3d,
+    position2d,
+    block-state,
+    block-predicate,
+    item,
+    item-predicate,
+    component,
+    rotation,
+    resource-location,
+    entity-anchor,
+    gamemode,
+    difficulty,
+    time(s32),
+    %resource(string),
+  }
+
+  variant command-error {
+    invalid-consumption(option<string>),
+    invalid-requirement,
+    permission-denied,
+    command-failed(text-component),
+  }
+
+  resource command-node {
+    literal: static func(name: string) -> command-node;
+    argument: static func(name: string, arg-type: argument-type) -> command-node;
+    then: func(node: command-node);
+    execute-with-handler-id: func(handler-id: u32);
+    require-with-handler-id: func(handler-id: u32);
+  }
+
+  resource command {
+    constructor(names: list<string>, description: string);
+    then: func(node: command-node);
+    execute-with-handler-id: func(handler-id: u32);
+  }
+}
+
+interface event {
+  use common.{block-position, game-mode, hand, item-stack, position, click-type};
+  use player.{player};
+  use text.{text-component};
+  use %world.{%world};
+
+  enum event-priority {
+    highest,
+    high,
+    normal,
+    low,
+    lowest,
+  }
+
+  record player-join-event-data {
+    player: player,
+    join-message: text-component,
+    cancelled: bool,
+  }
+
+  record player-leave-event-data {
+    player: player,
+    leave-message: text-component,
+    cancelled: bool,
+  }
+
+  record player-login-event-data {
+    player: player,
+    kick-message: text-component,
+    cancelled: bool,
+  }
+
+  record player-chat-event-data {
+    player: player,
+    message: string,
+    recipients: list<player>,
+    cancelled: bool,
+  }
+
+  record player-command-send-event-data {
+    player: player,
+    command: string,
+    cancelled: bool,
+  }
+
+  record player-permission-check-event-data {
+    player: player,
+    permission: string,
+    permission-result: bool,
+  }
+
+  record player-move-event-data {
+    player: player,
+    from-position: position,
+    to-position: position,
+    cancelled: bool,
+  }
+
+  record player-teleport-event-data {
+    player: player,
+    from-position: position,
+    to-position: position,
+    cancelled: bool,
+  }
+
+  record player-change-world-event-data {
+    player: player,
+    previous-world: %world,
+    new-world: %world,
+    position: position,
+    yaw: f32,
+    pitch: f32,
+    cancelled: bool,
+  }
+
+  record player-exp-change-event-data {
+    player: player,
+    amount: s32,
+  }
+
+  record player-item-held-event-data {
+    player: player,
+    previous-slot: u8,
+    new-slot: u8,
+    cancelled: bool,
+  }
+
+  record player-changed-main-hand-event-data {
+    player: player,
+    main-hand: hand,
+  }
+
+  record player-gamemode-change-event-data {
+    player: player,
+    previous-gamemode: game-mode,
+    new-gamemode: game-mode,
+    cancelled: bool,
+  }
+
+  record player-custom-payload-event-data {
+    player: player,
+    channel: string,
+    data: list<u8>,
+  }
+
+  enum player-fish-state {
+    fishing,
+    caught-fish,
+    caught-entity,
+    in-ground,
+    failed-attempt,
+    reel-in,
+    bite,
+  }
+
+  record player-fish-event-data {
+    player: player,
+    caught-uuid: option<string>,
+    caught-type: string,
+    hook-uuid: string,
+    state: player-fish-state,
+    hand: hand,
+    exp-to-drop: s32,
+    cancelled: bool,
+  }
+
+  record player-egg-throw-event-data {
+    player: player,
+    egg-uuid: string,
+    hatching: bool,
+    num-hatches: u8,
+    hatching-type: string,
+    cancelled: bool,
+  }
+
+  enum entity-interaction-action {
+    interact,
+    attack,
+    interact-at,
+  }
+
+  enum interact-action {
+    left-click-block,
+    left-click-air,
+    right-click-air,
+    right-click-block,
+  }
+
+  record player-interact-event-data {
+    player: player,
+    action: interact-action,
+    clicked-pos: option<block-position>,
+    block: string,
+    cancelled: bool,
+  }
+
+  record player-toggle-sneak-event-data {
+    player: player,
+    is-sneaking: bool,
+    cancelled: bool,
+  }
+
+  record player-toggle-flight-event-data {
+    player: player,
+    is-flying: bool,
+    cancelled: bool,
+  }
+
+  record player-toggle-sprint-event-data {
+    player: player,
+    is-sprinting: bool,
+    cancelled: bool,
+  }
+
+  record player-interact-unknown-entity-event-data {
+    player: player,
+    entity-id: s32,
+    action: entity-interaction-action,
+    cancelled: bool,
+  }
+
+  record inventory-click-event-data {
+    player: player,
+    window-type: option<string>,
+    click-type: click-type,
+    slot: s16,
+    raw-slot: s16,
+    clicked-item: option<item-stack>,
+    cursor: option<item-stack>,
+    hotbar-button: s32,
+    cancelled: bool,
+  }
+
+  record inventory-close-event-data {
+    player: player,
+    window-type: option<string>,
+  }
+
+  record block-redstone-event-data {
+    target-world: %world,
+    state-id: u16,
+    block-position: block-position,
+    old-current: s32,
+    new-current: s32,
+    cancelled: bool,
+  }
+
+  record block-break-event-data {
+    player: option<player>,
+    block: string,
+    block-position: block-position,
+    exp: u32,
+    should-drop: bool,
+    cancelled: bool,
+  }
+
+  record block-burn-event-data {
+    igniting-block: string,
+    block: string,
+    cancelled: bool,
+  }
+
+  record block-can-build-event-data {
+    block-to-build: string,
+    buildable: bool,
+    player: player,
+    block: string,
+    cancelled: bool,
+  }
+
+  record block-grow-event-data {
+    target-world: %world,
+    old-block: string,
+    old-state-id: u16,
+    new-block: string,
+    new-state-id: u16,
+    block-position: block-position,
+    cancelled: bool,
+  }
+
+  record block-place-event-data {
+    player: player,
+    block-placed: string,
+    block-placed-against: string,
+    block-position: block-position,
+    can-build: bool,
+    cancelled: bool,
+  }
+
+  record server-command-event-data {
+    command: string,
+    cancelled: bool,
+  }
+
+  record spawn-change-event-data {
+    target-world: %world,
+    previous-position: block-position,
+    previous-yaw: f32,
+    previous-pitch: f32,
+    new-position: block-position,
+    new-yaw: f32,
+    new-pitch: f32,
+  }
+
+  record server-broadcast-event-data {
+    message: text-component,
+    sender: text-component,
+    cancelled: bool,
+  }
+
+  enum event-type {
+    player-join-event,
+    player-leave-event,
+    player-login-event,
+    player-chat-event,
+    player-command-send-event,
+    player-permission-check-event,
+    player-move-event,
+    player-teleport-event,
+    player-change-world-event,
+    player-exp-change-event,
+    player-item-held-event,
+    player-changed-main-hand-event,
+    player-gamemode-change-event,
+    player-custom-payload-event,
+    player-fish-event,
+    player-egg-throw-event,
+    player-interact-unknown-entity-event,
+    player-interact-event,
+    player-toggle-sneak-event,
+    player-toggle-flight-event,
+    player-toggle-sprint-event,
+    inventory-click-event,
+    inventory-close-event,
+    block-redstone-event,
+    block-break-event,
+    block-burn-event,
+    block-can-build-event,
+    block-grow-event,
+    block-place-event,
+    server-command-event,
+    spawn-change-event,
+    server-broadcast-event,
+  }
+
+  variant event {
+    player-join-event(player-join-event-data),
+    player-leave-event(player-leave-event-data),
+    player-login-event(player-login-event-data),
+    player-chat-event(player-chat-event-data),
+    player-command-send-event(player-command-send-event-data),
+    player-permission-check-event(player-permission-check-event-data),
+    player-move-event(player-move-event-data),
+    player-teleport-event(player-teleport-event-data),
+    player-change-world-event(player-change-world-event-data),
+    player-exp-change-event(player-exp-change-event-data),
+    player-item-held-event(player-item-held-event-data),
+    player-changed-main-hand-event(player-changed-main-hand-event-data),
+    player-gamemode-change-event(player-gamemode-change-event-data),
+    player-custom-payload-event(player-custom-payload-event-data),
+    player-fish-event(player-fish-event-data),
+    player-egg-throw-event(player-egg-throw-event-data),
+    player-interact-unknown-entity-event(player-interact-unknown-entity-event-data),
+    player-interact-event(player-interact-event-data),
+    player-toggle-sneak-event(player-toggle-sneak-event-data),
+    player-toggle-flight-event(player-toggle-flight-event-data),
+    player-toggle-sprint-event(player-toggle-sprint-event-data),
+    inventory-click-event(inventory-click-event-data),
+    inventory-close-event(inventory-close-event-data),
+    block-redstone-event(block-redstone-event-data),
+    block-break-event(block-break-event-data),
+    block-burn-event(block-burn-event-data),
+    block-can-build-event(block-can-build-event-data),
+    block-grow-event(block-grow-event-data),
+    block-place-event(block-place-event-data),
+    server-command-event(server-command-event-data),
+    spawn-change-event(spawn-change-event-data),
+    server-broadcast-event(server-broadcast-event-data),
+  }
+}
+
+interface context {
+  use server.{server};
+  use event.{event-type, event-priority};
+  use command.{command};
+  use permission.{permission};
+
+  resource context {
+    register-event: func(handler-id: u32, event-type: event-type, event-priority: event-priority, blocking: bool);
+    register-command: func(command: command, permission: string);
+    register-permission: func(permission: permission) -> result<_, string>;
+    get-data-folder: func() -> string;
+    get-server: func() -> server;
+  }
+}
+
+interface i18n {
+  use common.{locale};
+
+  translate: func(key: string, locale: locale) -> string;
+
+  load-translations: func(namespace: string, json: string, locale: locale);
+}
+
+interface scheduler {
+  schedule-delayed-task: func(handler-id: u32, delay-ticks: u64) -> u32;
+
+  schedule-repeating-task: func(handler-id: u32, delay-ticks: u64, period-ticks: u64) -> u32;
+
+  cancel-task: func(task-id: u32);
+}
+
+interface boss-bar {
+  use text.{text-component};
+  use player.{player};
+
+  enum boss-bar-color {
+    pink,
+    blue,
+    red,
+    green,
+    yellow,
+    purple,
+    white,
+  }
+
+  enum boss-bar-division {
+    no-division,
+    notches-6,
+    notches-10,
+    notches-12,
+    notches-20,
+  }
+
+  record boss-bar-metadata {
+    darken-sky: bool,
+    dragon-bar: bool,
+    create-fog: bool,
+  }
+
+  resource boss-bar {
+    constructor(title: text-component, color: boss-bar-color, division: boss-bar-division);
+    get-title: func() -> text-component;
+    set-title: func(title: text-component);
+    get-health: func() -> f32;
+    set-health: func(health: f32);
+    get-color: func() -> boss-bar-color;
+    set-color: func(color: boss-bar-color);
+    get-division: func() -> boss-bar-division;
+    set-division: func(division: boss-bar-division);
+    get-metadata: func() -> boss-bar-metadata;
+    set-metadata: func(metadata: boss-bar-metadata);
+    add-player: func(player: player);
+    remove-player: func(player: player);
+    get-players: func() -> list<player>;
+    remove-all: func();
+  }
+}
+
+interface metadata {
+  record plugin-metadata {
+    name: string,
+    version: string,
+    authors: list<string>,
+    description: string,
+    dependencies: list<string>,
+  }
+
+  get-metadata: func() -> plugin-metadata;
+}
+
+world plugin {
+  import logging;
+  import common;
+  import text;
+  import gui;
+  import scoreboard;
+  import %world;
+  import entity;
+  import permission;
+  import player;
+  import server;
+  import block-entity;
+  import command;
+  import event;
+  import context;
+  import i18n;
+  import scheduler;
+  import boss-bar;
+  use context.{context};
+  use event.{event};
+  use server.{server as server-instance};
+  use command.{command-sender, consumed-args, command-error};
+
+  export init-plugin: func();
+  export on-load: func(context: context) -> result<_, string>;
+  export on-unload: func(context: context) -> result<_, string>;
+  export handle-event: func(event-id: u32, server: server-instance, event: event) -> event;
+  export handle-command: func(command-id: u32, sender: command-sender, server: server-instance, args: consumed-args) -> result<s32, command-error>;
+  export handle-task: func(handler-id: u32, server: server-instance);
+  export metadata;
+}

@@ -1,0 +1,12 @@
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/bin/Release/net10.0/PumpkinApi.deps.json
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/bin/Release/net10.0/PumpkinApi.dll
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/bin/Release/net10.0/PumpkinApi.pdb
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.GeneratedMSBuildEditorConfig.editorconfig
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.AssemblyInfoInputs.cache
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.AssemblyInfo.cs
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.csproj.CoreCompileInputs.cache
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.sourcelink.json
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.dll
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/refint/PumpkinApi.dll
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/PumpkinApi.pdb
+/home/alex/Documents/Development/Rust/pumpkin-api-cs/obj/Release/net10.0/ref/PumpkinApi.dll
