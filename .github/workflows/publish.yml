@@ -1,0 +1,49 @@
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish package to NuGet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build and Pack
+        run: |
+          set -eux
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+            dotnet pack --configuration Release --output ./artifacts -p:PackageVersion="$VERSION"
+          else
+            dotnet pack --configuration Release --output ./artifacts
+          fi
+
+      - name: NuGet Login (OIDC)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ vars.NUGET_USER || 'PumpkinMC' }}
+
+      - name: Publish to NuGet.org
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
